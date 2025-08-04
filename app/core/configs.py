@@ -7,11 +7,12 @@ class Config:
     class APP:
         HOST = "localhost"
         PORT = 8000
-        TITLE = "ACME API by Guigiusti"
+        TITLE = "ACMEVita API"
         VERSION = "0.0.1"
         CONTACT = {
-            "name": "Guigiusti",
+            "name": "Guilherme Giusti",
             "url": "https://github.com/guigiusti",
+            "email": "contato@guigiusti.com"
         }
         ROOT_PATH = "/api/v1"
         OPENAPI_URL = "/openapi.json"

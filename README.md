@@ -126,6 +126,36 @@ curl -X GET http://localhost/api/v1/employee/:department_id: \
   -H "Accept: application/json"
 ```
 
+## Como utilizar em ambiente de desenvolvimento
+Siga as instruções de instalação do [site oficial](https://www.python.org/downloads/).
+
+Com o Python instalado. Crie um ambiente virtual:
+```
+python -m venv env
+```
+Ative-o:
+```
+source env/bin/activate
+```
+
+Para instalar os pacotes utilizados:
+```
+pip install -r requirements.txt
+```
+E por fim, para rodar em modo de desenvolvimento:
+```
+fastapi dev app/main.py
+```
+
+### Rodando o teste
+
+Primeiramente mude nas configurações a variável ENV para "development".
+
+Agora basta digitar:
+
+```
+pytest tests/
+```
 
 
 
