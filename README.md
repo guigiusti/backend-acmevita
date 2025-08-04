@@ -1,45 +1,200 @@
-# ACMEVita
+<p align="center">
+  <h1 align="center">ACMEVita - API</h1>
+</p>
+<div align="center" margin-top="25px">
 
-Projeto de modelagem de dados e criação de uma API utilizando Python e qualquer framework de sua escolha (Flask, FastAPI, Django etc).
+  ![](https://img.shields.io/github/languages/count/guigiusti/backend-acmevita)
+  ![](https://img.shields.io/github/languages/top/guigiusti/backend-acmevita)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Este projeto é parte do processo de seleção de desenvolvedor backend da [Telavita](https://telavita.com.br).**
+</div>
 
-## Sobre o projeto
+## Sumário
+- [Sobre](#sobre)
+- [Requisitos](#requisitos)
+- [Como rodar](#como-rodar)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Endpoints](#endpoints)
 
-A ACMEVita está expandindo seus negócios e precisa de um sistema para gerenciar seus departamentos, colaboradores e dependentes.
+## Sobre
 
-O seu único desenvolvedor backend está de ferias, você foi recrutado para finalizar este projeto, boa sorte!
+Projeto de criação de uma API utilizando FastAPI com deploy em Docker Container. Possuí opção de utilizar um banco de dados local em SQLite ou PostgreSQL via Docker. Utiliza do Redis para Rate Limiting e do Nginx como proxy reverso.
 
-### Requisitos
+Para segurança, tanto o container de PostgreSQL quanto de Redis, estão disponíveis para acesso apenas dentro da rede interna do Docker.
 
-#### Como um Usuário da API eu gostaria de consultar todos os departamentos para visualizar a organização da ACMEVita.
+Um teste completo se encontra na [pasta de testes](https://github.com/guigiusti/backend-acmevita/tree/master/tests).
 
-* Cada departamento deve possuir um *nome do departamento*.
-* A API deve responder com uma listagem de departamentos no formato JSON informando o *nome do departamento* de cada departamento.
+Após iniciar o container, a documentação ficará disponível em: http://localhost/api/v1/docs ou http://localhost/api/v1/redocs
 
-#### Como um Usuário da API eu gostaria de consultar todos os colaboradores de um departamento para visualizar a organização da ACMEVita.
+## Próximos passos
 
-* Cada colaborador deve possuir um *nome completo*.
-* Cada colaborador deve pertencer a *um* departamento.
-* Cada colaborador pode possuir *nenhum, um ou mais* dependententes.
-* A API deve responder com uma listagem de colaboradores do departamento no formato JSON informando o *nome completo* de cada colaborador e a respectiva flag booleana `have_dependents` caso o colaborador possua *um ou mais dependentes*.
+- Autenticação com JWT ou via serviço externo como Clerk
+- Deixar PostgreSQL e Redis mais seguros. Ex: Mudando a senha
+- Colocar autenticação nos endpoints de documentação (caso necessário)
+- Endpoints de PUT e DELETE
 
-### Diferenciais
+## Estrutura do Projeto
+```
+app/
+├── api/
+│   ├── routes/
+├── core/            
+│   ├── middleware/
+├── models/  
+├── schemas/         
+tests/
+```
 
-* Testes unitários
-* Referência (Swagger ou similar)
-* Documentação e instruções de configuração
-* Separação das camadas de responsabilidade (modelagem de dados, serialização, regras de negócio, etc)
-* Conteinerização
 
-### Instruções
+## Requisitos
 
-1. Faça um _fork_ ou download deste projeto.
-2. Trabalhe localmente no seu projeto, faça até o ponto que conseguir.
-3. Você está livre para organizar a estrutura do projeto como preferir.
-4. Você deve utilizar o framework escolhido para criar os endpoints da API.
-5. Você pode utilizar a ORM de sua preferência para modelagem de dados.
-6. Suba o seu projeto para o GitHub e habilite a funcionalidade de Issues.
-7. Nos envie o link para o seu projeto, **mesmo que não esteja finalizado!**
+### Docker
 
-**Qualquer dúvida, [entre em contato](mailto:jc@telavita.com.br)!**
+Siga a [documentação](https://docs.docker.com/engine/install/) respectiva à sua máquina para instalar o docker. 
+
+### Clone o repositório
+```
+git clone https://github.com/guigiusti/backend-acmevita.git
+
+cd backend-acmevita
+```
+
+### Variáveis de ambiente
+
+ENV = "production" | "development" (opcional, padrão é production)
+
+## Como utilizar:
+
+Dentro da raiz do projeto, abra o terminal e digite:
+
+```
+docker compose up
+```
+
+Para rodar no fundo (detached):
+
+```
+docker compose up -d
+```
+
+**Importante:**
+
+Para usar o SQLite em vez do PostgreSQL, pode-se remover no arquivo de [docker-compose](https://github.com/guigiusti/backend-acmevita/blob/master/docker-compose.yaml) em APP a seguinte configuração de ambiente "DB_URL". Em ambiente de desenvolvimento, utiliza-se SQLite por padrão.
+
+De igual forma pode-se alterar a configuração de ambiente RATE_LIMIT_ENABLED, para habilitar ou desabilitar o Rate Limiter. Outras configurações podem ser alteradas no [arquivo de configuração da api](https://github.com/guigiusti/backend-acmevita/blob/master/app/core/configs.py).
+
+### Exemplos
+
+Como adicionar um departamento com curl:
+```
+curl -X POST http://localhost/api/v1/department \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Tecnologia"
+  }'
+```
+
+Como adicionar um colaborador com curl:
+```
+curl -X POST http://localhost/api/v1/employee \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Guilherme Giusti",
+    "department_id": 1,
+  }'
+```
+ou com dependentes:
+```
+curl -X POST http://localhost/api/v1/employee \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Guilherme Giusti",
+    "department_id": 1,
+    "dependents": [
+      { "name": "Gabriel" },
+    ]
+  }'
+```
+Retornar todos departamentos com curl (ou http://localhost/api/v1/departament no navegador):
+```
+curl -X GET http://localhost/api/v1/department \
+  -H "Accept: application/json"
+```
+Retornar usuários de um departamento com curl (ou http://localhost/api/v1/employee/:department_id: no navegador)
+```
+curl -X GET http://localhost/api/v1/employee/:department_id: \
+  -H "Accept: application/json"
+```
+
+
+
+
+
+## Endpoints
+
+### Departamento
+```
+GET /department
+HTTP 200
+
+Response Body: [
+    {
+        "id": int,
+        "name": string
+    }
+]
+```
+```
+POST /department
+HTTP 201
+
+Request Body {
+    "name": string
+}
+Response Body: {
+    "id": int,
+    "name": "string"
+}
+```
+### Colaboradores
+```
+GET /employee/:department_id:
+HTTP 200
+
+Response Body: [
+    {
+        "id": int,
+        "name": string
+    }
+]
+```
+```
+POST /employee
+HTTP 201
+
+Request Body {
+    "name": strig,
+    "department_id": int,
+    "dependents": opicional [{
+        "name": string
+    }]
+}
+Response Body: {
+    "id": int,
+    "name": "string",
+    "department_id": int,
+    "have_dependents": boolean
+    "dependents": [{
+        "name": string
+    }] ou []
+}
+```
+### Manutenção
+```
+DELETE /clean-db # Apenas habilitado em modo de desenvolvimento. Como para uso dos testes.
+HTTP 204
+```
+```
+GET /health
+HTTP 200
+```
