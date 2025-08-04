@@ -127,7 +127,7 @@ curl -X GET http://localhost/api/v1/employee/:department_id: \
 ```
 
 ## Como utilizar em ambiente de desenvolvimento
-Siga as instruções de instalação do [site oficial](https://www.python.org/downloads/).
+Caso ainda não tenha o Python instalado, siga as instruções de instalação no [site oficial](https://www.python.org/downloads/).
 
 Com o Python instalado. Crie um ambiente virtual:
 ```
