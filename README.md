@@ -12,8 +12,8 @@
 ## Sumário
 - [Sobre](#sobre)
 - [Requisitos](#requisitos)
-- [Como rodar](#como-utilizar)
-- [Como rodar em ambiente de desenvolvimento](#como-utilizar-em-ambiente-de-desenvolvimento)
+- [Como utilizar](#como-utilizar)
+- [Como utilizar em ambiente de desenvolvimento](#como-utilizar-em-ambiente-de-desenvolvimento)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Endpoints](#endpoints)
 
