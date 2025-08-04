@@ -13,6 +13,7 @@
 - [Sobre](#sobre)
 - [Requisitos](#requisitos)
 - [Como rodar](#como-rodar)
+- [Como rodar em ambiente de desenvolvimento](#como-rodar-em-ambiente-de-desenvolvimento)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Endpoints](#endpoints)
 
